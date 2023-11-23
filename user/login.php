@@ -158,14 +158,14 @@ $(document).ready(function(){
                         processData:false,
                         success:function(data){
                            let x=JSON.parse(data)
-                           alert(data)
+                  
 
                            nameError.text(x.nameError)
                            emailError.text(x.emailError)
                            passwordError.text(x.passwordError)
                            confirmPasswordError.text(x.cPasswordError)
 
-                           alert(x.success)
+       
 
                            success.text(x.success);
                            failure.text(x.error);
