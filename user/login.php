@@ -1,5 +1,5 @@
 <?php
-if(isset($_POST['submit']))
+if(isset($_POST['login']))
 {
     $email=$_POST['emails'];
     $password=$_POST['password'];
@@ -45,7 +45,7 @@ if(isset($_POST['submit']))
 <body>
 <div class="container mt-5 ">
     <div class="d-flex justify-content-center mb-3">
-    <form method="post" action="login.php" class="form">
+    <form method="post" action="#" class="form">
       <h1 class="hotelbtn ">Newsportal Login</h1>
   <div class="mb-3 mt-5">
     <label for="exampleInputEmail1" class="form-label">Email address</label>
@@ -57,53 +57,19 @@ if(isset($_POST['submit']))
     <input name="password" type="password" class="form-control" id="exampleInputPassword1" required>
   </div>
 
-  <button type="submit" name="submit" class="btns btn-primary">Login</button><br><br>
-  <button class="register" type="button" id="reg"> or Sign up now!!</button>
+  <button type="submit" name="login" class="btns btn-primary">Login</button><br><br>
+  <button class="register" type="button"> or Sign up now!!</button>
 </form>
-</div>  
 </div>
+  
 </div>
-<script src="js/jquery.js"></script>
-<script src="js/bootstrap.js"></script>
-<script>
-$(document).ready(function(){
-        $('.register').click(function(){   
-          $('#mdlNewNews').modal ('show');
-         });
-       
-         $('#register').click(function(){
-            var room=document.getElementById('Room');
-        
-
-            $.ajax({
-                        url:"phpFile/create.php",
-                        method:"POST",
-                        data: new FormData(room),
-                        contentType:false,
-                        cache:false,
-                        processData:false,
-                        success:function(data)
-                        {
-                            alert(data);
-                            location.reload(true);
-
-                        }
-                  });
-
-        });
-
-       });
-      
-</script>
-
-</body>
-</html>
 
 
-<div class="modal fade"  tabindex="-1" id="mdlNewNews">
+
+<div class="modal fade"  id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-        <form id="Room" name="Room"  >
+        <form id="regForm" method="post">
             <div class="modal-header">
                 <h5 class="modal-title">New Registration</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -112,25 +78,43 @@ $(document).ready(function(){
                 <div class="row mb-3">
                     <label for="inputEmail3" class="col-sm-3 col-form-label">Full Name</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" id="name" name="name" required>
+                        <input type="text" class="form-control" id="name" name="name">
+                        <span class="nameError" style="color: red;"></span>
+                        
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for="inputEmail3" class="col-sm-3 col-form-label">email</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" id="email" name="email" required>
+                        <input type="email" class="form-control" id="email"  name="email">
+                        <span class="emailError" style="color: red;"></span>
+
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for="inputPassword3" class="col-sm-3 col-form-label">password</label>
                     <div class="col-sm-9">
-                        <input type="password" class="form-control" id="confirm" name="password" required>
+                        <input type="password" class="form-control" id="confirm" name="password">
+                        <span class="passwordError" style="color: red;"></span>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for="inputPassword3" class="col-sm-3 col-form-label">confirm</label>
                     <div class="col-sm-9">
-                        <input type="password" class="form-control" id="confirm" name="confirm" required>
+                        <input type="password" class="form-control" id="confirm" name="confirm">
+                        <span class="confirmPasswordError" style="color: red;"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+          
+                    <div class="col-sm-9">
+                    <span class="text-center success" style="color: green;"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-9">
+                    <span class="text-center failure" style="color: red;"></span>
                     </div>
                 </div>
                 
@@ -138,10 +122,67 @@ $(document).ready(function(){
             </div>
             <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="register" class="btn btn-primary" >Register</button>
+                <button type="button" id="register" name="register"  class="btn btn-primary" >Register</button>
                 <input type="hidden" id="hidden_id" name="hidden_id" />
             </div>
         </form>
     </div>
   </div>
 </div>
+
+
+
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.js"></script>
+<script>
+
+let nameError=$(".nameError"),
+emailError=$(".emailError"),
+passwordError=$(".passwordError"),
+confirmPasswordError=$(".confirmPasswordError"),
+success=$(".success"),
+failure=$(".failure");
+$(document).ready(function(){
+        $('.register').click(function(){   
+          $('#myModal').modal('show');
+         });
+
+    $('#register').click(function(e){
+            var regForm=document.getElementById("regForm");
+            $.ajax({
+                        url:"phpFile/create.php",
+                        method:"POST",
+                        data: new FormData(regForm),
+                        contentType:false,
+                        cache:false,
+                        processData:false,
+                        success:function(data){
+                           let x=JSON.parse(data)
+                           alert(data)
+
+                           nameError.text(x.nameError)
+                           emailError.text(x.emailError)
+                           passwordError.text(x.passwordError)
+                           confirmPasswordError.text(x.cPasswordError)
+
+                           alert(x.success)
+
+                           success.text(x.success);
+                           failure.text(x.error);
+
+
+                
+                         
+                          
+                        }
+                    
+                  });
+             
+              
+                }
+                )
+            });
+</script>
+
+</body>
+</html>
